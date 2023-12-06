@@ -1,0 +1,53 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: certificate-ca
+  namespace: cert-manager
+spec:
+  secretName: certificate-ca-tls
+  commonName: 34.82.196.84.nip.io
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  usages:
+    - server auth
+    - client auth
+  isCA: true
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer
+  namespace: cert-manager
+spec:
+  ca:
+    secretName: certificate-ca-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dns-domain-server
+  namespace: istio-ingress
+spec:
+  secretName: wild-card-tls
+  commonName: "34.82.196.84.nip.io"
+  isCA: false
+  usages:
+    - server auth
+    - client auth
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  dnsNames:
+  - "34.82.196.84.nip.io"
+  issuerRef:
+    name:  ca-issuer
+    kind: ClusterIssuer

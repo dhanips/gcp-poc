@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-ingress
+  namespace: test-ns
+spec:
+  selector: {}  # Applies to all pods in the namespace
+  action: DENY
+  rules:
+  - from:
+    - source:
+        namespaces: ["*"]
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: ["istio-ingress"] 
