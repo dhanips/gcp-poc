@@ -12,5 +12,4 @@ module "gke"{
     source = "./gke"
     network = module.test-vpc-module.network_name
     subnetwork = module.test-vpc-module.subnets_names[1]
-
 }
